@@ -39,14 +39,14 @@ shinyServer(function(input, output) {
     
     
     fred.data <- reactive({
-                            fredSeries(indicator.type(), from = input$date) %>% apply.monthly(FUN = mean) %>%
-                              as.ts
+                            fredSeries(indicator.type(), from = input$date) %>%
+                              apply.monthly(FUN = mean)
                               
                           })
     
                   
     fred.compound <- reactive({
-                                frequency(as.ts(fred.data()))
+                                frequency(fred.data())
                               })
     
     
@@ -73,9 +73,6 @@ shinyServer(function(input, output) {
     output$text <- renderPrint({
       
       ets.forecast()$model
-      
-        
-        
                                     
       })
     
