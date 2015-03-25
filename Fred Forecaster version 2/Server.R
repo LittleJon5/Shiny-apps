@@ -4,7 +4,7 @@ require(ggplot2)
 require(fImport)
 require(magrittr)
 require(lubridate)
-require(xts)
+#require(xts)
 source("helper.R")
 
 shinyServer(function(input, output) {
@@ -40,7 +40,8 @@ shinyServer(function(input, output) {
     
     fred.data <- reactive({
                             fredSeries(indicator.type(), from = input$date) %>%
-                              apply.monthly(FUN = mean)
+                              applySeries(by = "monthly", FUN = mean)
+                              #apply.monthly(FUN = mean)
                               
                           })
     
@@ -77,7 +78,7 @@ shinyServer(function(input, output) {
       })
     
     output$table <- renderTable({
-
+      
      forecast.df <-  data.frame(as.character(as.Date(time(ets.forecast()$mean))),
                          ets.forecast()$lower[,2],
                          ets.forecast()$lower[, 1],
@@ -112,25 +113,27 @@ shinyServer(function(input, output) {
     
     load("data\\recessions.RData")
     recessions <- subset(recessions, Start >= input$date)
+    
+    ggforecast(plot.data, forecast.df, input$smooth, input$date)
              
 
-   startDate <- as.Date(time(ets.forecast()$residuals))[1]
-   endDate <- as.Date(time(ets.forecast()$mean))[input$horizon]
-        
-    ggplot(data = plot.data) +
-      geom_rect(data = recessions, aes(xmin = Start, xmax = End, 
-                                       ymin = -Inf, ymax = +Inf), fill = 'grey65', alpha = 0.4) +
-      geom_ribbon(data = forecast.df, fill = 'lightblue',
-                  aes(x = time, ymin = lower95, ymax = upper95)) +
-      geom_ribbon(data = forecast.df, fill = 'yellow',
-                  aes(x = time, ymin = lower80, ymax = upper80)) +
-      geom_line(data = forecast.df, aes(x = time, y = forecast), size = 1.0,
-                colour = 'red') +
-      geom_point(aes(x = time, y = values), size = 1.0, color = "red") +
-      geom_line(aes(x = time, y = values), color = "blue") +
-      geom_smooth(aes(x = time, y = values), method = "loess", span = input$smooth,
-                  size = 0.50, color = "darkblue", fill = "springgreen4") +
-      scale_x_date("", limits = c(startDate, endDate))
+#    startDate <- as.Date(time(ets.forecast()$residuals))[1]
+#    endDate <- as.Date(time(ets.forecast()$mean))[nrow(forecast$mean)]
+#         
+#     ggplot(data = plot.data) +
+#       geom_rect(data = recessions, aes(xmin = Start, xmax = End, 
+#                                        ymin = -Inf, ymax = +Inf), fill = 'grey65', alpha = 0.4) +
+#       geom_ribbon(data = forecast.df, fill = 'lightblue',
+#                   aes(x = time, ymin = lower95, ymax = upper95)) +
+#       geom_ribbon(data = forecast.df, fill = 'yellow',
+#                   aes(x = time, ymin = lower80, ymax = upper80)) +
+#       geom_line(data = forecast.df, aes(x = time, y = forecast), size = 1.0,
+#                 colour = 'red') +
+#       geom_point(aes(x = time, y = values), size = 1.0, color = "red") +
+#       geom_line(aes(x = time, y = values), color = "blue") +
+#       geom_smooth(aes(x = time, y = values), method = "loess", span = input$smooth,
+#                   size = 0.50, color = "darkblue", fill = "springgreen4") +
+#       scale_x_date("", limits = c(startDate, endDate))
       
     
  })

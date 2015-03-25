@@ -37,7 +37,7 @@ shinyUI(fluidPage(
                                "Expenditures",
                                "Tax Revenues"
                                ),
-                   selected = "Debt"),
+                   selected = "GDP"),
       
       selectInput("manipulate", label = h3("Manipulate Options"),
                   choices = c("No Transfromation",
