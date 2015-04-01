@@ -22,7 +22,7 @@ shinyServer(function(input, output) {
                                                                     "Unemployment Rate"),
                                                         selected = "NonAg Employment"
         )
-      } else if (catigory.input() == "Gross Domestic Product"){
+      } else if (catigory.input() == "Economic Growth"){
         selectInput("data.type", label = h3("Fred Ticker"),
                                                        choices = c("GDP",
                                                                    "Housing Starts",
@@ -132,7 +132,7 @@ shinyServer(function(input, output) {
     
     output$table <- renderTable({
       
-     forecast.df <-  data.frame(as.Date(time(ets.forecast()$mean)),
+     forecast.df <-  data.frame(as.character(as.Date(time(ets.forecast()$mean))),
                          ets.forecast()$lower[,2],
                          ets.forecast()$lower[, 1],
                          ets.forecast()$mean,

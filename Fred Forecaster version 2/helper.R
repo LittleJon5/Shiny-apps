@@ -66,25 +66,25 @@ ggforecast <- function(past, future, span.val, input.date){
                 aes( x = time , ymin = lower80 , ymax = upper80 ) ) +
     geom_line ( data = future , aes ( x = time , y = forecast ) , size = 1.0 ,
               colour = 'red' ) +
-    geom_point ( aes ( x = time , y = values ) , size = 1.0 , color = "red" ) +
+    geom_point ( aes ( x = time , y = values ) , size = 1.5 , color = "red" ) +
     geom_line ( aes  ( x = time , y = values ) , color = "blue" ) +
     geom_smooth ( aes ( x = time, y = values ) , method = "loess" , span = span.val,
-                size = 0.50 , color = "darkblue" , fill = "springgreen4" ) +
+                size = .65 , color = "black" , fill = "springgreen4" ) +
     scale_x_date( "" , limits = c( startDate , endDate ) )
 }
 
 # future data frame assembly function
 ###########################
 
-final.frame <- function(ets.data){
-  framed <- data.frame(as.character(as.Date(time(ets.data$mean))),
-                      ets.data$lower[,2],
-                      ets.data$lower[, 1],
-                      ets.data$mean,
-                      ets.data$upper[, 1],
-                      ets.data$upper[, 2])
-  names(framed) <- c('time', 'lower95', 'lower80', 'forecast',
-                     'upper80', 'upper95')
-  return(framed)
-}
+# final.frame <- function(ets.data){
+#   framed <- data.frame(as.character(as.Date(time(ets.data$mean))),
+#                       ets.data$lower[,2],
+#                       ets.data$lower[, 1],
+#                       ets.data$mean,
+#                       ets.data$upper[, 1],
+#                       ets.data$upper[, 2])
+#   names(framed) <- c('time', 'lower95', 'lower80', 'forecast',
+#                      'upper80', 'upper95')
+#   return(framed)
+# }
 

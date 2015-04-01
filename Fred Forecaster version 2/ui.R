@@ -12,94 +12,16 @@ shinyUI(fluidPage(
   sidebarLayout(
     sidebarPanel(
       selectInput("class", label = h3("Indicator Catigory"),
-                  choices = c("Gross Domestic Product",
+                  choices = c("Economic Growth",
                               "Labor Markets",
                               "Inflation",
                               "Monetary Policy",
                               "Fiscal Policy"
                   ),
-                  selected = "Gross Domestic Product"
+                  selected = "Economic Growth"
       ),
       
       uiOutput("picker"),
-      
-#       conditionalPanel("input.class == 'Gross Domestic Product'",
-#                        selectInput("data.type", label = h3("Fred Ticker"),
-#                                    choices = c("GDP",
-#                                                "Housing Starts",
-#                                                "Industrial Production",
-#                                                "ISM Index",
-#                                                "Retail Sales Seasonally Adjusted",
-#                                                "Retail Sales Not Seasonally Adjusted",
-#                                                "Yield Curve Slope",
-#                                                "Leading Indicators"),
-#                                    selected = "GDP"
-#                        )
-#       ),
-#       conditionalPanel("input.class == 'Labor Markets'",
-#                        selectInput("data.type", label = h3("Fred Ticker"),
-#                                    choices = c("NonAg Employment",
-#                                                "Unemployment Rate"),
-#                                    selected = "NonAg Employment"
-#                        )
-#       ),
-#       conditionalPanel("input.class == 'Inflation'",
-#                        selectInput("data.type", label = h3("Fred Ticker"),
-#                                    choices = c("CPI",
-#                                                "Core CPI",
-#                                                "Capacity Utilization",
-#                                                "Unit Labor Cost",
-#                                                "Nonfarm Business Sector"
-#                                    ),
-#                                    selected = "CPI"
-#                        )
-#       ),
-#       
-#       conditionalPanel("input.class == 'Monetary Policy'",
-#                        selectInput("data.type", label = h3("Fred Ticker"),
-#                                    choices = c("Adjusted Monetary Base",
-#                                                "Excess Reserves",
-#                                                "M2 Money Supply",
-#                                                "Effective Federal Funds Rates"),
-#                                    selected = "Adjusted Monetary Base"
-#                        )
-#       ),
-#       conditionalPanel("input.class == 'Fiscal Policy'",
-#                        selectInput("data.type", label = h3("Fred Ticker"),
-#                                    choices = c("Deficit",
-#                                                "Debt",
-#                                                "Expenditures",
-#                                                "Tax Revenues"),
-#                                    selected = "Deficit"
-#                        )
-#       ),
-      
-#       selectInput("data.type", label = h3("Fred Ticker"),
-#                    choices = c("GDP",
-#                                "Housing Starts",
-#                                "Industrial Production",
-#                                "ISM Index",
-#                                "Retail Sales Seasonally Adjusted",
-#                                "Retail Sales Not Seasonally Adjusted",
-#                                "Yield Curve Slope",
-#                                "Leading Indicators",
-#                                "NonAg Employment",
-#                                "Unemployment Rate",
-#                                "CPI",
-#                                "Core CPI",
-#                                "Capacity Utilization",
-#                                "Unit Labor Cost",
-#                                "Nonfarm Business Sector",
-#                                "Adjusted Monetary Base",
-#                                "Excess Reserves",
-#                                "M2 Money Supply",
-#                                "Effective Federal Funds Rate",
-#                                "Deficit",
-#                                "Debt",
-#                                "Expenditures",
-#                                "Tax Revenues"
-#                                ),
-#                    selected = "GDP"),
       
       selectInput("manipulate", label = h3("Manipulate Options"),
                   choices = c("No Transfromation",
@@ -141,7 +63,7 @@ shinyUI(fluidPage(
         tabsetPanel(
           tabPanel("Forecast Graph", plotOutput("plot")),
           tabPanel("Model", h2(verbatimTextOutput("text"))),
-          tabPanel("Forecast Data", h2(tableOutput("table")))
+          tabPanel("Forecasts", h2(tableOutput("table")))
         )
       
              )
