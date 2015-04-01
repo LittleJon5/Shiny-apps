@@ -9,9 +9,64 @@ source("helper.R")
 
 shinyServer(function(input, output) {
   
+    catigory.input <- reactive({
+      input$class
+    })
+    
+    output$picker <- renderUI({
+      
+      if(catigory.input() == "Labor Markets") {
+      
+        selectInput("data.type", label = h3("Fred Ticker"),
+                                                        choices = c("NonAg Employment",
+                                                                    "Unemployment Rate"),
+                                                        selected = "NonAg Employment"
+        )
+      } else if (catigory.input() == "Gross Domestic Product"){
+        selectInput("data.type", label = h3("Fred Ticker"),
+                                                       choices = c("GDP",
+                                                                   "Housing Starts",
+                                                                   "Industrial Production",
+                                                                   "ISM Index",
+                                                                   "Retail Sales Seasonally Adjusted",
+                                                                   "Retail Sales Not Seasonally Adjusted",
+                                                                   "Yield Curve Slope",
+                                                                   "Leading Indicators"),
+                                                       selected = "GDP"
+                                           )
+      } else if(catigory.input() == "Inflation"){
+        selectInput("data.type", label = h3("Fred Ticker"),
+                                                       choices = c("CPI",
+                                                                   "Core CPI",
+                                                                   "Capacity Utilization",
+                                                                   "Unit Labor Cost",
+                                                                   "Nonfarm Business Sector"
+                                                       ),
+                                                       selected = "CPI"
+                                           )
+      } else if(catigory.input() == "Monetary Policy"){
+        selectInput("data.type", label = h3("Fred Ticker"),
+                                                       choices = c("Adjusted Monetary Base",
+                                                                   "Excess Reserves",
+                                                                   "M2 Money Supply",
+                                                                   "Effective Federal Funds Rates"),
+                                                       selected = "Adjusted Monetary Base"
+        )
+      } else {
+        selectInput("data.type", label = h3("Fred Ticker"),
+                                                       choices = c("Deficit",
+                                                                   "Debt",
+                                                                   "Expenditures",
+                                                                   "Tax Revenues"),
+                                                       selected = "Deficit"
+                                           )
+      }
+    })
  
     indicator.type <- reactive({
                         switch(input$data.type,
+                               "NonAg Employment" = "PAYEMS",
+                               "Unemployment Rate" = "UNRATE",
                                "GDP" = "GDPC96",
                                "Housing Starts" = "HOUST",
                                "Industrial Production" = "INDPRO",
@@ -20,8 +75,6 @@ shinyServer(function(input, output) {
                                "Retail Sales Not Seasonally Adjusted" = "RSAFSNA",
                                "Yield Curve Slope" = "T10Y2Y",
                                "Leading Indicators" = "USSLIND",
-                               "NonAg Employment" = "PAYEMS",
-                               "Unemployment Rate" = "UNRATE",
                                "CPI" = "CPIAUCSL",
                                "Core CPI" = "CPILFESL",
                                "Capacity Utilization" = "TCU",
@@ -31,11 +84,11 @@ shinyServer(function(input, output) {
                                "Excess Reserves" = "EXCSRESNS",
                                "M2 Money Supply" = "M2SL",
                                "Effective Federal Funds Rate" = "FEDFUNDS",
-                               "Deficit" = "Q15035USQ027SNBR",
                                "Debt" = "GFDEBTN",
                                "Expenditures" = "FGEXPND",
-                               "Tax Revenues" = "FGRECPT")
-                      })
+                               "Tax Revenues" = "FGRECPT"
+                               )
+      })
     
     
     fred.data <- reactive({
@@ -79,7 +132,7 @@ shinyServer(function(input, output) {
     
     output$table <- renderTable({
       
-     forecast.df <-  data.frame(as.character(as.Date(time(ets.forecast()$mean))),
+     forecast.df <-  data.frame(as.Date(time(ets.forecast()$mean)),
                          ets.forecast()$lower[,2],
                          ets.forecast()$lower[, 1],
                          ets.forecast()$mean,
