@@ -4,7 +4,7 @@ library(ggplot2)
 library(fImport)
 
 shinyUI(fluidPage(
-  
+# ------------------------- This loads the css file for app style
   includeCSS("styles.css"),
   
   titlePanel(h1("Macro Economic Indicators")),
