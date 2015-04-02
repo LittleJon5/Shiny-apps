@@ -23,6 +23,8 @@ shinyUI(fluidPage(
       
       uiOutput("picker"),
       
+      actionButton("get.data", "Get Fred Data"),
+      
       selectInput("manipulate", label = h3("Manipulate Options"),
                   choices = c("No Transfromation",
                               "Change",

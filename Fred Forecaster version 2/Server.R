@@ -79,7 +79,7 @@ shinyServer(function(input, output) {
     # and turns into the associated fred ticker symbol
     ###############
  
-    indicator.type <- reactive({
+    indicator.type <- eventReactive(input$get.data, {
                         switch(input$data.type,
                                "NonAg Employment" = "PAYEMS",
                                "Unemployment Rate" = "UNRATE",
