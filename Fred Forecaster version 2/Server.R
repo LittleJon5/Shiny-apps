@@ -4,14 +4,25 @@ require(ggplot2)
 require(fImport)
 require(magrittr)
 require(lubridate)
-#require(xts)
 source("helper.R")
 
 shinyServer(function(input, output) {
   
+##################
+#------------------------------- Indicator Catigory
+# This recieves to the Indicator and saves it as catigory.input
+# for later use
+                                        
     catigory.input <- reactive({
       input$class
     })
+    
+##################
+# ---------------------------- Conditional Panel Section
+# This is where we'll use catigory.input to make conditional pannels.
+# This segment outputs a series of conditional pannels to the ui.
+# It displays different options for data.type depending on what is selected
+# for Indicator Catigory
     
     output$picker <- renderUI({
       
@@ -62,6 +73,11 @@ shinyServer(function(input, output) {
                                            )
       }
     })
+    
+####################
+    # The next part of this converts the user input for data.type
+    # and turns into the associated fred ticker symbol
+    ###############
  
     indicator.type <- reactive({
                         switch(input$data.type,
@@ -89,20 +105,33 @@ shinyServer(function(input, output) {
                                "Tax Revenues" = "FGRECPT"
                                )
       })
-    
+  
+###########################
+    # This part of the server gets the data from FRED. It uses the 
+    # indicator.type() to indicate which fred series I'll pull
+    #######################
     
     fred.data <- reactive({
                             fredSeries(indicator.type(), from = input$date) %>%
                               applySeries(by = "monthly", FUN = mean)
-                              #apply.monthly(FUN = mean)
                               
                           })
+  
+##############################
+    # This part of the is what we used to dermine the
+    # the compound frequncy of the fredSeries
+    # this will come into play in the next part of the server
+    # we need this information for some of the manipulation functions
+    ################################
     
                   
     fred.compound <- reactive({
                                 frequency(fred.data())
                               })
-    
+#######################
+    # This function calls on functions located in the helper script that
+    # change the time series. 
+    ###################
     
     fred.final <- reactive({
                             switch(input$manipulate,
@@ -117,12 +146,19 @@ shinyServer(function(input, output) {
                                    "Natural Log" = fred.data() %>% log
                                    )   
                             })
+######################
+    # The next function takes the final time series and scales it
+    # next it makes an ets model
+    # then if forecast the models out by how ever far the user desires
+    ##################
     
     ets.forecast <- reactive({
                           (fred.final() / input$scalefactor ) %>%
                           ets %>% forecast(h = input$horizon)
                           })
-    
+########################
+    # this part out puts the model paramerter the model table on the ui
+    #####################
     
     output$text <- renderPrint({
       
@@ -130,65 +166,31 @@ shinyServer(function(input, output) {
                                     
       })
     
+#############################
+    # This displays the forecast information
+    # it calls the forecast.frame function from the helper script
+    #########################
+    
     output$table <- renderTable({
       
-     forecast.df <-  data.frame(as.character(as.Date(time(ets.forecast()$mean))),
-                         ets.forecast()$lower[,2],
-                         ets.forecast()$lower[, 1],
-                         ets.forecast()$mean,
-                         ets.forecast()$upper[, 1],
-                         ets.forecast()$upper[, 2])
-      
-      names(forecast.df) <- c('time', 'lower95', 'lower80', 'forecast',
-                              'upper80', 'upper95')
+      forecast.df <- forecast.frame(ets.forecast())
       
       forecast.df
       
     })
     
-
+#######################
+    # This calls three functions from helper.r to get the two data
+    # required to use in the plot function
+    # #################
+    
    output$plot <- renderPlot({
      
-    forecast.df <-  data.frame(as.Date(time(ets.forecast()$mean)),
-                        ets.forecast()$lower[,2],
-                        ets.forecast()$lower[, 1],
-                        ets.forecast()$mean,
-                        ets.forecast()$upper[, 1],
-                        ets.forecast()$upper[, 2])
-    
-    names(forecast.df) <- c('time', 'lower95', 'lower80', 'forecast',
-                            'upper80', 'upper95')
-    
-    plot.data <- data.frame(as.Date(time(ets.forecast()$x)),
-                            ets.forecast()$x,
-                            ets.forecast()$fitted)
-    names(plot.data) <- c("time", "values", "fitted")
-    
-    load("data\\recessions.RData")
-    recessions <- subset(recessions, Start >= input$date)
+    forecast.df <- forecast.plot.frame(ets.forecast())
+ 
+    plot.data <- past.data(ets.forecast())
     
     ggforecast(plot.data, forecast.df, input$smooth, input$date)
-             
-
-#    startDate <- as.Date(time(ets.forecast()$residuals))[1]
-#    endDate <- as.Date(time(ets.forecast()$mean))[nrow(forecast$mean)]
-#         
-#     ggplot(data = plot.data) +
-#       geom_rect(data = recessions, aes(xmin = Start, xmax = End, 
-#                                        ymin = -Inf, ymax = +Inf), fill = 'grey65', alpha = 0.4) +
-#       geom_ribbon(data = forecast.df, fill = 'lightblue',
-#                   aes(x = time, ymin = lower95, ymax = upper95)) +
-#       geom_ribbon(data = forecast.df, fill = 'yellow',
-#                   aes(x = time, ymin = lower80, ymax = upper80)) +
-#       geom_line(data = forecast.df, aes(x = time, y = forecast), size = 1.0,
-#                 colour = 'red') +
-#       geom_point(aes(x = time, y = values), size = 1.0, color = "red") +
-#       geom_line(aes(x = time, y = values), color = "blue") +
-#       geom_smooth(aes(x = time, y = values), method = "loess", span = input$smooth,
-#                   size = 0.50, color = "darkblue", fill = "springgreen4") +
-#       scale_x_date("", limits = c(startDate, endDate))
-      
-    
  })
   
   }

@@ -73,18 +73,56 @@ ggforecast <- function(past, future, span.val, input.date){
     scale_x_date( "" , limits = c( startDate , endDate ) )
 }
 
-# future data frame assembly function
+# future data frame assembly function 
+# this version of the function works best for displaying
+# the data in a table format
+# the next function is exactly the same except that
+# as.character portion of the first item in the data frame is left off
 ###########################
 
-# final.frame <- function(ets.data){
-#   framed <- data.frame(as.character(as.Date(time(ets.data$mean))),
-#                       ets.data$lower[,2],
-#                       ets.data$lower[, 1],
-#                       ets.data$mean,
-#                       ets.data$upper[, 1],
-#                       ets.data$upper[, 2])
-#   names(framed) <- c('time', 'lower95', 'lower80', 'forecast',
-#                      'upper80', 'upper95')
-#   return(framed)
-# }
+forecast.frame <- function(ets.data){
+  framed <- data.frame(as.character(as.Date(time(ets.data$mean))),
+                      ets.data$mean,
+                      ets.data$lower[,2],
+                      ets.data$lower[, 1],
+                      ets.data$upper[, 1],
+                      ets.data$upper[, 2])
+  names(framed) <- c('time', 'forecast', 'lower95', 'lower80', 
+                     'upper80', 'upper95')
+  return(framed)
+}
+
+######################
+# This version is idea for getting the data into a plotable form.
+######################
+
+forecast.plot.frame <- function(ets.data){
+  framed <- data.frame(as.Date(time(ets.data$mean)),
+                       ets.data$mean,
+                       ets.data$lower[,2],
+                       ets.data$lower[, 1],
+                       ets.data$upper[, 1],
+                       ets.data$upper[, 2])
+  names(framed) <- c('time', 'forecast', 'lower95', 'lower80', 
+                     'upper80', 'upper95')
+  return(framed)
+}
+
+#####
+# This function is like the one before but it assembles
+# a plot for the observed data used in the forecast
+# for this is best combined with the forecast.plot.frame
+# to use the ggforecast function.
+#####
+
+past.data <- function(ets.data){
+  
+  plot.data <- data.frame(as.Date(time(ets.data$x)),
+                  ets.data$x,
+                  ets.data$fitted)
+  names(plot.data) <- c("time", "values", "fitted")
+  
+  return(plot.data)
+}
+#####
 
