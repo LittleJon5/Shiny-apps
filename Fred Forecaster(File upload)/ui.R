@@ -22,6 +22,17 @@ shinyUI(fluidPage(
                   '.tsv'
                 )),
       
+      selectInput("manipulate", label = h3("Manipulate Options"),
+                  choices = c("No Transfromation",
+                              "Change",
+                              "Change From a Year Ago",
+                              "Percent Change",
+                              "Percent Change from a Year Ago",
+                              "Compounded Annual Rate of Change",
+                              "Continuously Compounded Rate of Change",
+                              "Countinuously Compounded Annual Rate of Change",
+                              "Natural Log"),
+                  selected = "No Transformation"),
       
       dateInput("date", 
                 label = h3("Date Input"), 
@@ -40,8 +51,13 @@ shinyUI(fluidPage(
     ),
     
     mainPanel(
-         plotOutput("plot")
-        )
+      tabsetPanel(
+        tabPanel("Forecast Graph", plotOutput("plot")),
+        tabPanel("Model", h2(verbatimTextOutput("text"))),
+        tabPanel("Forecasts", h2(tableOutput("table")))
+      )
+      
+    )
       
              )
   ))

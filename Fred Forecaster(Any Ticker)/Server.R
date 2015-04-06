@@ -75,6 +75,10 @@ shinyServer(function(input, output) {
     
     output$table <- renderTable({
       
+      validate(
+        need(input$get.data, "Please enter the ticker for the data you wish to Forecast and Click the Get Data Button")
+      )
+      
       forecast.df <- forecast.frame(ets.forecast())
       
       forecast.df
@@ -87,6 +91,10 @@ shinyServer(function(input, output) {
     # #################
     
    output$plot <- renderPlot({
+     
+     validate(
+       need(input$get.data, "Please enter the ticker for the data you wish to Forecast and Click the Get Data Button")
+     )
      
     forecast.df <- forecast.plot.frame(ets.forecast())
  
