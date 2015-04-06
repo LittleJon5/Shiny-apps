@@ -74,12 +74,14 @@ shinyServer(function(input, output) {
       }
     })
     
+    
 ####################
     # The next part of this converts the user input for data.type
     # and turns into the associated fred ticker symbol
     ###############
  
     indicator.type <- eventReactive(input$get.data, {
+      
                         switch(input$data.type,
                                "NonAg Employment" = "PAYEMS",
                                "Unemployment Rate" = "UNRATE",
@@ -173,6 +175,10 @@ shinyServer(function(input, output) {
     
     output$table <- renderTable({
       
+      validate(
+        need(input$get.data, "Please Select the data you wish to Forecast and Click the 'Get Fred Data' Button")
+      )
+      
       forecast.df <- forecast.frame(ets.forecast())
       
       forecast.df
@@ -185,6 +191,10 @@ shinyServer(function(input, output) {
     # #################
     
    output$plot <- renderPlot({
+    
+    validate(
+      need(input$get.data, "Please Select the data you wish to Forecast and Click the 'Get Fred Data' Button")
+    )
      
     forecast.df <- forecast.plot.frame(ets.forecast())
  
