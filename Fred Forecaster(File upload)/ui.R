@@ -22,17 +22,6 @@ shinyUI(fluidPage(
                   '.tsv'
                 )),
       
-      selectInput("manipulate", label = h3("Manipulate Options"),
-                  choices = c("No Transfromation",
-                              "Change",
-                              "Change From a Year Ago",
-                              "Percent Change",
-                              "Percent Change from a Year Ago",
-                              "Compounded Annual Rate of Change",
-                              "Continuously Compounded Rate of Change",
-                              "Countinuously Compounded Annual Rate of Change",
-                              "Natural Log"),
-                  selected = "No Transformation"),
       
       dateInput("date", 
                 label = h3("Date Input"), 
@@ -42,12 +31,6 @@ shinyUI(fluidPage(
                    label = h3("Forecast Horizon"), 
                    value = 12), 
       
-      sliderInput("smooth",
-                  label = h3("Smoother"),
-                  min=.05,
-                  max=.5,
-                  value= .21,
-                  animate = TRUE),
       
       numericInput("scalefactor", 
                    label = h3("Scaled by:"), 
@@ -56,14 +39,9 @@ shinyUI(fluidPage(
       
     ),
     
-    
-    
     mainPanel(
-        tabsetPanel(
-          tabPanel("Forecast Graph", plotOutput("plot")),
-          tabPanel("Model", h2(verbatimTextOutput("text"))),
-          tabPanel("Forecasts", h2(tableOutput("table")))
+         plotOutput("plot")
         )
       
              )
-  )))
+  ))
