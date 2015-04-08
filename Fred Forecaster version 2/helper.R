@@ -48,7 +48,7 @@ cca <- function(tsData, n_obs_per_year) {
 # ----------------------------- Final plot function
 ggforecast <- function(past, future, span.val, input.date){
   
-  load("data\\recessions.RData")
+  load(url("http://marriottschool.net/teacher/govfinance/recessions.RData"))
   recessions <- subset(recessions, Start >= input.date)
   
   startDate <- past$time[1]
@@ -117,6 +117,7 @@ past.data <- function(ets.data){
   plot.data <- data.frame(as.Date(time(ets.data$x)),
                   ets.data$x,
                   ets.data$fitted)
+  
   names(plot.data) <- c("time", "values", "fitted")
   
   return(plot.data)

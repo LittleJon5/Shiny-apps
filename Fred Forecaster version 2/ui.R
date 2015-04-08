@@ -37,6 +37,13 @@ shinyUI(fluidPage(
                               "Natural Log"),
                   selected = "No Transformation"),
       
+      sliderInput("smooth",
+                  label = h3("Smoother"),
+                  min=.05,
+                  max=.5,
+                  value= .21,
+                  animate = TRUE),
+      
       dateInput("date", 
                 label = h3("Date Input"), 
                 value = "1959-01-01"),
@@ -44,13 +51,6 @@ shinyUI(fluidPage(
       numericInput("horizon", 
                    label = h3("Forecast Horizon"), 
                    value = 12), 
-      
-      sliderInput("smooth",
-                  label = h3("Smoother"),
-                  min=.05,
-                  max=.5,
-                  value= .21,
-                  animate = TRUE),
       
       numericInput("scalefactor", 
                    label = h3("Scaled by:"), 
