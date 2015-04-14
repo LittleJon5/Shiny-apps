@@ -48,15 +48,10 @@ cca <- function(tsData, n_obs_per_year) {
 # ----------------------------- Final plot function
 ggforecast <- function(past, future, span.val, input.date){
   
-  load("data\\recessions.RData")
-  recessions <- subset(recessions, Start >= input.date)
-  
   startDate <- past$time[1]
   endDate <- future$time[nrow(future)]
   
   ggplot ( data = past ) +
-    geom_rect ( data = recessions , aes ( xmin = Start , xmax = End , 
-                                     ymin = -Inf , ymax = +Inf ) , fill = 'grey65', alpha = 0.4 ) +
     geom_ribbon ( data = future , fill = 'lightblue ' ,
                 aes ( x = time , ymin = lower95 , ymax = upper95 ) ) +
     geom_ribbon ( data = future , fill = 'yellow' ,
