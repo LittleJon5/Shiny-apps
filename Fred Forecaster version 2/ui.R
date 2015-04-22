@@ -7,11 +7,14 @@ shinyUI(fluidPage(
 # ------------------------- This loads the css file for app style
   includeCSS("styles.css"),
   
-  titlePanel(h1("Macro Economic Indicators")),
+  titlePanel(h1("US Macroeconomic Situation and Forecast" )),
   
   sidebarLayout(
     sidebarPanel(
-      selectInput("class", label = h3("Indicator Catigory"),
+      
+      helpText(h3("Graphs, Models, and Forecasts")),
+      
+      selectInput("class", label = h4("Goals and Policy"),
                   choices = c("Economic Growth",
                               "Labor Markets",
                               "Inflation",
@@ -23,10 +26,12 @@ shinyUI(fluidPage(
       
       uiOutput("picker"),
       
-      actionButton("get.data", "Get Fred Data"),
+      actionButton("getData", "Forecast"),
       
-      selectInput("manipulate", label = h3("Manipulate Options"),
-                  choices = c("No Transfromation",
+      helpText(h3("Options")),
+      
+      selectInput("manipulate", label = h4("Transformations"),
+                  choices = c("No Transformation",
                               "Change",
                               "Change From a Year Ago",
                               "Percent Change",
@@ -38,23 +43,27 @@ shinyUI(fluidPage(
                   selected = "No Transformation"),
       
       sliderInput("smooth",
-                  label = h3("Smoother"),
+                  label = h4("Smoothing Parameter"),
                   min=.05,
                   max=.5,
                   value= .21,
                   animate = TRUE),
       
-      dateInput("date", 
-                label = h3("Date Input"), 
-                value = "1959-01-01"),
-      
       numericInput("horizon", 
-                   label = h3("Forecast Horizon"), 
+                   label = h4("Forecast Horizon"), 
                    value = 12), 
       
-      numericInput("scalefactor", 
-                   label = h3("Scaled by:"), 
-                   value = 1)
+      dateInput("date", 
+                label = h4("Initial Date: 'yyyy-mm-dd'"), 
+                value = "1959-01-01"),
+      
+      selectInput("scalefactor", 
+                   label = h4("Scaled by:"), 
+                   c("No Change" = 1,
+                     "Thousands" = 1000,
+                     "Millions" = 1000000,
+                     "Billions" = 1000000000),
+                  selected = "No change")
                             
       
     ),

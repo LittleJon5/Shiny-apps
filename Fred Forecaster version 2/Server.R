@@ -28,13 +28,13 @@ shinyServer(function(input, output) {
       
       if(catigory.input() == "Labor Markets") {
       
-        selectInput("data.type", label = h3("Fred Ticker"),
+        selectInput("data.type", label = h4("Indicator"),
                                                         choices = c("NonAg Employment",
                                                                     "Unemployment Rate"),
                                                         selected = "NonAg Employment"
         )
       } else if (catigory.input() == "Economic Growth"){
-        selectInput("data.type", label = h3("Fred Ticker"),
+        selectInput("data.type", label = h4("Indicator"),
                                                        choices = c("GDP",
                                                                    "Housing Starts",
                                                                    "Industrial Production",
@@ -46,7 +46,7 @@ shinyServer(function(input, output) {
                                                        selected = "GDP"
                                            )
       } else if(catigory.input() == "Inflation"){
-        selectInput("data.type", label = h3("Fred Ticker"),
+        selectInput("data.type", label = h4("Indicator"),
                                                        choices = c("CPI",
                                                                    "Core CPI",
                                                                    "Capacity Utilization",
@@ -56,7 +56,7 @@ shinyServer(function(input, output) {
                                                        selected = "CPI"
                                            )
       } else if(catigory.input() == "Monetary Policy"){
-        selectInput("data.type", label = h3("Fred Ticker"),
+        selectInput("data.type", label = h4("Indicator"),
                                                        choices = c("Adjusted Monetary Base",
                                                                    "Excess Reserves",
                                                                    "M2 Money Supply",
@@ -64,7 +64,7 @@ shinyServer(function(input, output) {
                                                        selected = "Adjusted Monetary Base"
         )
       } else {
-        selectInput("data.type", label = h3("Fred Ticker"),
+        selectInput("data.type", label = h4("Indicator"),
                                                        choices = c("Deficit",
                                                                    "Debt",
                                                                    "Expenditures",
@@ -80,7 +80,7 @@ shinyServer(function(input, output) {
     # and turns into the associated fred ticker symbol
     ###############
  
-    indicator.type <- eventReactive(input$get.data, {
+    indicator.type <- eventReactive(input$getData, {
       
                         switch(input$data.type,
                                "NonAg Employment" = "PAYEMS",
@@ -155,7 +155,7 @@ shinyServer(function(input, output) {
     ##################
     
     ets.forecast <- reactive({
-                          (fred.final() / input$scalefactor ) %>%
+                          (fred.final()/ as.numeric(input$scalefactor)) %>%
                           ets %>% forecast(h = input$horizon)
                           })
 ########################
@@ -176,7 +176,8 @@ shinyServer(function(input, output) {
     output$table <- renderTable({
       
       validate(
-        need(input$get.data, "Please Select the data you wish to Forecast and Click the 'Get Fred Data' Button")
+        need(input$getData, "Please Select the data you wish to Forecast and Click the 'Forecast' Button,
+             when this message disappears your forecast is on its way.")
       )
       
       forecast.df <- forecast.frame(ets.forecast())
@@ -193,7 +194,8 @@ shinyServer(function(input, output) {
    output$plot <- renderPlot({
     
     validate(
-      need(input$get.data, "Please Select the data you wish to Forecast and Click the 'Get Fred Data' Button")
+      need(input$getData, "Please Select the data you wish to Forecast and Click the 'Forecast' Button.
+           When this message disappears your forecast is on its way.")
     )
      
     forecast.df <- forecast.plot.frame(ets.forecast())
