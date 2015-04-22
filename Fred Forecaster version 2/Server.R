@@ -137,7 +137,7 @@ shinyServer(function(input, output) {
     
     fred.final <- reactive({
                             switch(input$manipulate,
-                                   "No Transfromation" = fred.data(),
+                                   "No Transformation" = fred.data(),
                                    "Change" = fred.data() %>% chg,
                                    "Change From a Year Ago" = fred.data() %>% ch1(n_obs_per_year = fred.compound()),
                                    "Percent Change" = fred.data() %>% pch,
@@ -203,6 +203,8 @@ shinyServer(function(input, output) {
     
     ggforecast(plot.data, forecast.df, input$smooth, input$date)
  })
+   
+  
   
   }
 )
