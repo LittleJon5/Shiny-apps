@@ -6,11 +6,13 @@ h1, h2, h3, h4 {
 }
 
 h1 {
-  font-size: 36px;
+  font-size: 48px;
 	font-style: bold;
 	font-variant: normal;
 	line-height: 30px;
   color: #FFFFFF;
+  padding-bottom: 35px;
+  padding-top: 25px;
 }
 
 h2 {
@@ -37,6 +39,7 @@ h4 {
 
 body {
   background-color: #000000;
+  font-size: 16px;
 }
 
 #getData {

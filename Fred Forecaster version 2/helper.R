@@ -114,7 +114,7 @@ forecast.plot.frame <- function(ets.data){
 
 past.data <- function(ets.data){
   
-  plot.data <- data.frame(as.Date(time(ets.data$x)),
+  plot.data <- data.frame(as.Date(t1ime(ets.data$x)),
                   ets.data$x,
                   ets.data$fitted)
   

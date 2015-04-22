@@ -54,7 +54,7 @@ shinyUI(fluidPage(
                    value = 12), 
       
       dateInput("date", 
-                label = h4("Initial Date: 'yyyy-mm-dd'"), 
+                label = h4("Initial Date: (YYYY-MM-DD)"), 
                 value = "1959-01-01"),
       
       selectInput("scalefactor", 

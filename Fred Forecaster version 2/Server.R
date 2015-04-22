@@ -124,7 +124,7 @@ shinyServer(function(input, output) {
     # the compound frequncy of the fredSeries
     # this will come into play in the next part of the server
     # we need this information for some of the manipulation functions
-    ################################
+    ##########################
     
                   
     fred.compound <- reactive({
@@ -181,7 +181,6 @@ shinyServer(function(input, output) {
       )
       
       forecast.df <- forecast.frame(ets.forecast())
-      
       forecast.df
       
     })
