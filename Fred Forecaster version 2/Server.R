@@ -180,7 +180,7 @@ shinyServer(function(input, output) {
     
     output$text3 <- renderPrint({
       
-      ets.forecast()$model$initstate
+      tail(ets.forecast()$model$states)[6, ]
       
     })
     

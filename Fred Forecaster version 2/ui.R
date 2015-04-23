@@ -76,7 +76,7 @@ shinyUI(fluidPage(
                    h2(verbatimTextOutput("text")),
                    helpText(h5("Smooth Parameters")),
                    h2(verbatimTextOutput("text2")),
-                   helpText(h5("Initial States")),
+                   helpText(h5("Model")),
                    h2(verbatimTextOutput("text3"))),
           tabPanel("Forecasts",
                    helpText(h5("Forecasted Values")),
