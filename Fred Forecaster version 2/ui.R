@@ -70,10 +70,18 @@ shinyUI(fluidPage(
     
     mainPanel(
         tabsetPanel(
-          tabPanel("Forecast Graph", plotOutput("plot")),
-          tabPanel("Model", h2(verbatimTextOutput("text"))),
-          tabPanel("Forecasts", h2(tableOutput("table")))
+          tabPanel("Forecast Graph", h5(plotOutput("plot"))),
+          tabPanel("Model",
+                   helpText(h5("Method")),
+                   h2(verbatimTextOutput("text")),
+                   helpText(h5("Smooth Parameters")),
+                   h2(verbatimTextOutput("text2")),
+                   helpText(h5("Initial States")),
+                   h2(verbatimTextOutput("text3"))),
+          tabPanel("Forecasts",
+                   helpText(h5("Forecasted Values")),
+                   h5(tableOutput("table"))
         )
       
              )
-  )))
+  ))))

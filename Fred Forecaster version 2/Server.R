@@ -161,12 +161,28 @@ shinyServer(function(input, output) {
 ########################
     # this part out puts the model paramerter the model table on the ui
     #####################
+   
     
     output$text <- renderPrint({
       
-      ets.forecast()$model
+      ets.forecast()$model$method
                                     
       })
+    
+    
+    
+    output$text2 <- renderPrint({
+      
+      ets.forecast()$model$par
+      
+    })
+    
+    
+    output$text3 <- renderPrint({
+      
+      ets.forecast()$model$initstate
+      
+    })
     
 #############################
     # This displays the forecast information
