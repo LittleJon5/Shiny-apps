@@ -42,6 +42,14 @@ shinyUI(fluidPage(
                               "Natural Log"),
                   selected = "No Transformation"),
       
+      selectInput("scalefactor", 
+                  label = h4("Scale Factor"), 
+                  c("No Change" = 1,
+                    "Thousands" = 1000,
+                    "Millions" = 1000000,
+                    "Billions" = 1000000000),
+                  selected = "No change"),
+      
       sliderInput("smooth",
                   label = h4("Smoothing Parameter"),
                   min=.05,
@@ -54,18 +62,8 @@ shinyUI(fluidPage(
                    value = 12), 
       
       dateInput("date", 
-                label = h4("Initial Date: (YYYY-MM-DD)"), 
-                value = "1959-01-01"),
-      
-      selectInput("scalefactor", 
-                   label = h4("Scaled by:"), 
-                   c("No Change" = 1,
-                     "Thousands" = 1000,
-                     "Millions" = 1000000,
-                     "Billions" = 1000000000),
-                  selected = "No change")
-                            
-      
+                label = h4("Initial Date (YYYY-MM-DD)"), 
+                value = "1959-01-01")
     ),
     
     

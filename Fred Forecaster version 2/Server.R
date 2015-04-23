@@ -65,11 +65,11 @@ shinyServer(function(input, output) {
         )
       } else {
         selectInput("data.type", label = h4("Indicator"),
-                                                       choices = c("Deficit",
+                                                       choices = c(
                                                                    "Debt",
                                                                    "Expenditures",
                                                                    "Tax Revenues"),
-                                                       selected = "Deficit"
+                                                       selected = "Debt"
                                            )
       }
     })
