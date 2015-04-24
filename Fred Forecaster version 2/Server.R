@@ -9,31 +9,31 @@ source("helper.R")
 shinyServer(function(input, output) {
   
 ##################
-#------------------------------- Indicator Catigory
-# This recieves to the Indicator and saves it as catigory.input
+#------------------------------- Indicator category
+# This recieves to the Indicator and saves it as category.input
 # for later use
                                         
-    catigory.input <- reactive({
+    category.input <- reactive({
       input$class
     })
     
-##################
+#######################
 # ---------------------------- Conditional Panel Section
-# This is where we'll use catigory.input to make conditional pannels.
+# This is where we'll use category.input to make conditional pannels.
 # This segment outputs a series of conditional pannels to the ui.
 # It displays different options for data.type depending on what is selected
-# for Indicator Catigory
+# for Indicator category
     
     output$picker <- renderUI({
       
-      if(catigory.input() == "Labor Markets") {
+      if(category.input() == "Labor Markets") {
       
         selectInput("data.type", label = h4("Indicator"),
                                                         choices = c("NonAg Employment",
                                                                     "Unemployment Rate"),
                                                         selected = "NonAg Employment"
         )
-      } else if (catigory.input() == "Economic Growth"){
+      } else if (category.input() == "Economic Growth"){
         selectInput("data.type", label = h4("Indicator"),
                                                        choices = c("GDP",
                                                                    "Housing Starts",
@@ -45,7 +45,7 @@ shinyServer(function(input, output) {
                                                                    "Leading Indicators"),
                                                        selected = "GDP"
                                            )
-      } else if(catigory.input() == "Inflation"){
+      } else if(category.input() == "Inflation"){
         selectInput("data.type", label = h4("Indicator"),
                                                        choices = c("CPI",
                                                                    "Core CPI",
@@ -55,7 +55,7 @@ shinyServer(function(input, output) {
                                                        ),
                                                        selected = "CPI"
                                            )
-      } else if(catigory.input() == "Monetary Policy"){
+      } else if(category.input() == "Monetary Policy"){
         selectInput("data.type", label = h4("Indicator"),
                                                        choices = c("Adjusted Monetary Base",
                                                                    "Excess Reserves",
@@ -156,7 +156,7 @@ shinyServer(function(input, output) {
     
     ets.forecast <- reactive({
                           (fred.final()/ as.numeric(input$scalefactor)) %>%
-                          ets %>% forecast(h = input$horizon)
+                          ets %>% forecast(h = input$horizon, model = "zzn")
                           })
 ########################
     # this part out puts the model paramerter the model table on the ui
