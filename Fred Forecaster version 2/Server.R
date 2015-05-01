@@ -30,7 +30,9 @@ shinyServer(function(input, output) {
       
         selectInput("data.type", label = h4("Indicator"),
                                                         choices = c("NonAg Employment",
-                                                                    "Unemployment Rate"),
+                                                                    "Unemployment Rate",
+                                                                    "Average Work Week",
+                                                                    "Average Hourly Earning"),
                                                         selected = "NonAg Employment"
         )
       } else if (category.input() == "Economic Growth"){
@@ -49,6 +51,8 @@ shinyServer(function(input, output) {
         selectInput("data.type", label = h4("Indicator"),
                                                        choices = c("CPI",
                                                                    "Core CPI",
+                                                                   "PCE",
+                                                                   "Core PCE",
                                                                    "Capacity Utilization",
                                                                    "Unit Labor Cost",
                                                                    "Nonfarm Business Sector"
@@ -60,12 +64,13 @@ shinyServer(function(input, output) {
                                                        choices = c("Adjusted Monetary Base",
                                                                    "Excess Reserves",
                                                                    "M2 Money Supply",
-                                                                   "Effective Federal Funds Rates"),
+                                                                   "Effective Federal Funds Rate"),
                                                        selected = "Adjusted Monetary Base"
         )
       } else {
         selectInput("data.type", label = h4("Indicator"),
                                                        choices = c(
+                                                                   "Deficit",
                                                                    "Debt",
                                                                    "Expenditures",
                                                                    "Tax Revenues"),
@@ -85,6 +90,8 @@ shinyServer(function(input, output) {
                         switch(input$data.type,
                                "NonAg Employment" = "PAYEMS",
                                "Unemployment Rate" = "UNRATE",
+                               "Average Work Week" = "AWHAETP",
+                               "Average Hourly Earning" = "CES0500000003",
                                "GDP" = "GDPC96",
                                "Housing Starts" = "HOUST",
                                "Industrial Production" = "INDPRO",
@@ -95,6 +102,8 @@ shinyServer(function(input, output) {
                                "Leading Indicators" = "USSLIND",
                                "CPI" = "CPIAUCSL",
                                "Core CPI" = "CPILFESL",
+                               "PCE" = "PCEPI",
+                               "Core PCE" = "PCEPILFE",
                                "Capacity Utilization" = "TCU",
                                "Unit Labor Cost" = "ULCNFB",
                                "Nonfarm Business Sector" = "OPHNFB",
@@ -102,6 +111,7 @@ shinyServer(function(input, output) {
                                "Excess Reserves" = "EXCSRESNS",
                                "M2 Money Supply" = "M2SL",
                                "Effective Federal Funds Rate" = "FEDFUNDS",
+                               "Deficit" = "FYFSD",
                                "Debt" = "GFDEBTN",
                                "Expenditures" = "FGEXPND",
                                "Tax Revenues" = "FGRECPT"
@@ -156,7 +166,7 @@ shinyServer(function(input, output) {
     
     ets.forecast <- reactive({
                           (fred.final()/ as.numeric(input$scalefactor)) %>%
-                          ets %>% forecast(h = input$horizon, model = "zzn")
+                          ets %>% forecast(h = input$horizon, model = "ZZN")
                           })
 ########################
     # this part out puts the model paramerter the model table on the ui
