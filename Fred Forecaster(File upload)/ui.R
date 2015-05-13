@@ -19,8 +19,24 @@ shinyUI(fluidPage(
                   'text/tab-separated-values',
                   'text/plain',
                   '.csv',
-                  '.tsv'
+                  '.tsv',
+                  'application/vnd.ms-excel',
+                  '.xlsx'
                 )),
+      
+      numericInput("startRow",
+                   "What Row is the header?",
+                   value = 7,
+                   min = 1,
+                   max = 50),
+      
+      numericInput("sheetNum",
+                   "What sheet is the data on?",
+                   value = 1,
+                   min = 1,
+                   max = 50),
+      
+      actionButton("getData", "Forecast"),
       
       selectInput("manipulate", label = h3("Manipulate Options"),
                   choices = c("No Transfromation",

@@ -17,8 +17,12 @@ shinyServer(function(input, output) {
     fred.data <- reactive({
       
                       file <- input$data
-                      readWorksheetFromFile(file$datapath, sheet=1, header = TRUE, startRow = 7) %>% as.timeSeries
+                      readWorksheetFromFile(file$datapath, sheet= input$sheetNum, header = TRUE, startRow = input$startRow) %>% as.timeSeries
                           })
+    
+    fred.compound <- reactive({
+      frequency(fred.data())
+    })
     
     fred.final <- reactive({
       switch(input$manipulate,
@@ -40,7 +44,7 @@ shinyServer(function(input, output) {
     # this will come into play in the next part of the server
     # we need this information for some of the manipulation functions
     ################################
-    ets.forecast <- reactive({
+    ets.forecast <-  eventReactive(input$getData, {
                           (fred.final() / input$scalefactor ) %>%
                           ets %>% forecast(h = input$horizon)
                           })
