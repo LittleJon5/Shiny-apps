@@ -7,7 +7,6 @@ h1, h2, h3, h4, h5, #table {
 
 h1 {
   font-size: 48px;
-	font-style: bold;
 	font-variant: normal;
 	line-height: 30px;
   color: #FFFFFF;
@@ -57,14 +56,11 @@ body {
   font-size: 15px;
   border-radius: 10px;
   color: #FFFFFF;
-  font-style: bold;
 }
 
-#table {
+#table, #arimaTable {
   margin-right: 8%;
   margin-left: 20%;
   font-size: 15px;
   color: #ffffff;
-}
-
 }

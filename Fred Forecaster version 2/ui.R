@@ -70,17 +70,29 @@ shinyUI(fluidPage(
     
     mainPanel(
         tabsetPanel(
-          tabPanel("Forecast Graph", h5(plotOutput("plot"))),
+          tabPanel("Forecast Graph",
+                   helpText(h5("ETS Forecast")),
+                   h5(plotOutput("plot")),
+                   helpText(h5("Arima Forecast")),
+                   h5(plotOutput("arimaPlot"))
+                   ),
           tabPanel("Model",
-                   helpText(h5("Method")),
+                   helpText(h5("ETS Method")),
                    h2(verbatimTextOutput("text")),
-                   helpText(h5("Smooth Parameters")),
+                   helpText(h5("ETS Smooth Parameters")),
                    h2(verbatimTextOutput("text2")),
-                   helpText(h5("Model")),
-                   h2(verbatimTextOutput("text3"))),
+                   helpText(h5("ETS Model")),
+                   h2(verbatimTextOutput("text3")),
+                   helpText(h5("ARIMA Method")),
+                   h2(verbatimTextOutput("text4")),
+                   helpText(h5("ARIMA Smooth Parameters")),
+                   h2(verbatimTextOutput("text5"))
+                   ),
           tabPanel("Forecasts",
-                   helpText(h5("Forecasted Values")),
-                   h5(tableOutput("table"))
+                   helpText(h5("ETS Forecast")),
+                   h5(tableOutput("table")),
+                   helpText(h5("ARIMA Forecast")),
+                   h5(tableOutput("arimaTable"))
         )
       
              )

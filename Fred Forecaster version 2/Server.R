@@ -168,18 +168,32 @@ shinyServer(function(input, output) {
                           (fred.final()/ as.numeric(input$scalefactor)) %>%
                           ets %>% forecast(h = input$horizon, model = "ZZN")
                           })
+
+######################
+    # This creates an arima model on the same data
+    # using the same basic syntax as the ets model
+    ##################
+    
+    arima.forecast <- reactive({
+      (fred.final() / as.numeric(input$scalefactor)) %>% 
+        auto.arima(seasonal = FALSE) %>% 
+        forecast(h = input$horizon)
+    })
+
+        
 ########################
     # this part out puts the model paramerter the model table on the ui
+    # ETS Method Output
     #####################
-   
     
     output$text <- renderPrint({
       
       ets.forecast()$model$method
                                     
       })
-    
-    
+#########################
+    # ETS Smoothing Parameters
+    ################
     
     output$text2 <- renderPrint({
       
@@ -187,16 +201,55 @@ shinyServer(function(input, output) {
       
     })
     
+##########################
+    # ETS Final States 
+    ####################
     
     output$text3 <- renderPrint({
       
-      tail(ets.forecast()$model$states)[6, ]
+      nrow.val <- nrow(ets.forecast()$model$states)
+      
+      ets.forecast()$model$states[nrow.val, ]
       
     })
+    
+############################
+    # Arima Model
+    ########################
+    
+    output$text4 <- renderPrint({
+      
+      arima.forecast()$method
+      
+    })
+    
+#########################
+    # ETS Smoothing Parameters
+    ################
+    
+    output$text5 <- renderPrint({
+      
+      
+      arima.forecast()$model$coef
+      
+    })
+    
+##########################
+    # ARIMA Final States 
+    ####################
+    
+#     output$text6 <- renderPrint({
+#       
+#       nrow.val <- nrow(arima.forecast()$model$states)
+#       
+#       arima.forecast()$model$states[nrow.val, ]
+#       
+#     })
     
 #############################
     # This displays the forecast information
     # it calls the forecast.frame function from the helper script
+    # This is for the ETS Forecast
     #########################
     
     output$table <- renderTable({
@@ -206,10 +259,21 @@ shinyServer(function(input, output) {
              when this message disappears your forecast is on its way.")
       )
       
-      forecast.df <- forecast.frame(ets.forecast())
-      forecast.df
+      forecast.frame(ets.forecast())
       
     })
+    
+######################
+    # Arima Table
+    ###################
+    
+    output$arimaTable <- renderTable({
+      
+      forecast.frame(arima.forecast())
+      
+    })
+    
+    
     
 #######################
     # This calls three functions from helper.r to get the two data
@@ -229,6 +293,25 @@ shinyServer(function(input, output) {
     
     ggforecast(plot.data, forecast.df, input$smooth, input$date)
  })
+   
+##########################3
+   # Arima Plot output segment
+   ##################
+   
+   output$arimaPlot <- renderPlot({
+     
+     validate(
+       need(input$getData, "Please Select the data you wish to Forecast and Click the 'Forecast' Button.
+            When this message disappears your forecast is on its way.")
+       )
+     
+     forecast.df <- forecast.plot.frame(arima.forecast())
+     
+     plot.data <- past.data(arima.forecast())
+     
+     ggforecast(plot.data, forecast.df, input$smooth, input$date)
+     
+   })
    
   
   
