@@ -147,7 +147,7 @@ shinyServer(function(input, output) {
     
     fred.final <- reactive({
                             switch(input$manipulate,
-                                   "No Transformation" = fred.data(),
+                                   "Original Units" = fred.data(),
                                    "Change" = fred.data() %>% chg,
                                    "Change From a Year Ago" = fred.data() %>% ch1(n_obs_per_year = fred.compound()),
                                    "Percent Change" = fred.data() %>% pch,
@@ -165,9 +165,11 @@ shinyServer(function(input, output) {
     ##################
     
     ets.forecast <- reactive({
+      
                           (fred.final()/ as.numeric(input$scalefactor)) %>%
                           ets %>% forecast(h = input$horizon, model = "ZZN")
-                          })
+
+                            })
 
 ######################
     # This creates an arima model on the same data
@@ -175,9 +177,46 @@ shinyServer(function(input, output) {
     ##################
     
     arima.forecast <- reactive({
-      (fred.final() / as.numeric(input$scalefactor)) %>% 
-        auto.arima(seasonal = FALSE) %>% 
-        forecast(h = input$horizon)
+      
+                                (fred.final() / as.numeric(input$scalefactor)) %>% 
+                                  auto.arima(seasonal = FALSE) %>% 
+                                  forecast(h = input$horizon)
+                                
+                              })
+    
+#######################
+    # This calls three functions from helper.r to get the two data
+    # required to use in the plot function
+    # #################
+    
+    output$plot <- renderPlot({
+      
+      validate(
+        need(input$getData, "Please Select the data you wish to Forecast and Click the 'Forecast' Button.
+             When this message disappears your forecast is on its way.")
+        )
+      
+      plotData <- forecastPlotData(ets.forecast(), fred.final())
+      
+      forecastPlot(plotData, input$smooth, input$date
+                   )
+    })
+    
+##########################3
+    # Arima Plot output segment
+    ##################
+    
+    output$arimaPlot <- renderPlot({
+      
+      validate(
+        need(input$getData, "Please Select the data you wish to Forecast and Click the 'Forecast' Button.
+             When this message disappears your forecast is on its way.")
+        )
+      
+      plotData <- forecastPlotData(arima.forecast(), fred.final())
+      
+      forecastPlot(plotData, input$smooth, input$date)
+      
     })
 
         
@@ -188,7 +227,9 @@ shinyServer(function(input, output) {
     
     output$text <- renderPrint({
       
-      ets.forecast()$model$method
+      ets.forecast()$model$method %>% 
+        as.character %>% 
+        cat
                                     
       })
 #########################
@@ -197,54 +238,46 @@ shinyServer(function(input, output) {
     
     output$text2 <- renderPrint({
       
-      ets.forecast()$model$par
-      
+     modelPar <-  ets.forecast()$model$par[names(ets.forecast()$model$par) %in% c("alpha", "beta")]
+     
+     names(modelPar) <- gsub(pattern = "alpha", replacement = "alpha (level)", x = names(modelPar))
+     
+     names(modelPar) <- gsub(pattern = "beta", replacement = "beta (slope)", x = names(modelPar))
+     
+     nrow.val <- nrow(ets.forecast()$model$states)
+     
+    final.states <-  ets.forecast()$model$states[nrow.val, ]
+    
+    c(modelPar, final.states)
+     
     })
     
-##########################
-    # ETS Final States 
-    ####################
     
-    output$text3 <- renderPrint({
-      
-      nrow.val <- nrow(ets.forecast()$model$states)
-      
-      ets.forecast()$model$states[nrow.val, ]
-      
-    })
-    
+
+
 ############################
     # Arima Model
     ########################
     
-    output$text4 <- renderPrint({
+    output$text3 <- renderPrint({
       
-      arima.forecast()$method
+      method <- arima.forecast()$method
+      
+      regmatches(method, gregexpr("ARIMA\\([0-9]+[[:punct:]][0-9]+[[:punct:]][0-9]+\\)", method)) %>% 
+        as.character %>% 
+        cat
       
     })
     
 #########################
-    # ETS Smoothing Parameters
+    # Arima Smoothing Parameters
     ################
-    
-    output$text5 <- renderPrint({
-      
+  
+    output$text4 <- renderPrint({
       
       arima.forecast()$model$coef
       
     })
-    
-##########################
-    # ARIMA Final States 
-    ####################
-    
-#     output$text6 <- renderPrint({
-#       
-#       nrow.val <- nrow(arima.forecast()$model$states)
-#       
-#       arima.forecast()$model$states[nrow.val, ]
-#       
-#     })
     
 #############################
     # This displays the forecast information
@@ -259,62 +292,11 @@ shinyServer(function(input, output) {
              when this message disappears your forecast is on its way.")
       )
       
-      forecast.frame(ets.forecast())
+      # forecast.frame(ets.forecast())
+      
+      combinedTable(arima.forecast(), ets.forecast())
       
     })
-    
-######################
-    # Arima Table
-    ###################
-    
-    output$arimaTable <- renderTable({
-      
-      forecast.frame(arima.forecast())
-      
-    })
-    
-    
-    
-#######################
-    # This calls three functions from helper.r to get the two data
-    # required to use in the plot function
-    # #################
-    
-   output$plot <- renderPlot({
-    
-    validate(
-      need(input$getData, "Please Select the data you wish to Forecast and Click the 'Forecast' Button.
-           When this message disappears your forecast is on its way.")
-    )
-     
-    forecast.df <- forecast.plot.frame(ets.forecast())
- 
-    plot.data <- past.data(ets.forecast())
-    
-    ggforecast(plot.data, forecast.df, input$smooth, input$date)
- })
-   
-##########################3
-   # Arima Plot output segment
-   ##################
-   
-   output$arimaPlot <- renderPlot({
-     
-     validate(
-       need(input$getData, "Please Select the data you wish to Forecast and Click the 'Forecast' Button.
-            When this message disappears your forecast is on its way.")
-       )
-     
-     forecast.df <- forecast.plot.frame(arima.forecast())
-     
-     plot.data <- past.data(arima.forecast())
-     
-     ggforecast(plot.data, forecast.df, input$smooth, input$date)
-     
-   })
-   
-  
-  
   }
 )
 

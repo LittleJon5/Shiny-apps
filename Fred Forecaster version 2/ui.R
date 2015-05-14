@@ -31,7 +31,7 @@ shinyUI(fluidPage(
       helpText(h3("Options")),
       
       selectInput("manipulate", label = h4("Transformations"),
-                  choices = c("No Transformation",
+                  choices = c("Original Units",
                               "Change",
                               "Change From a Year Ago",
                               "Percent Change",
@@ -77,22 +77,21 @@ shinyUI(fluidPage(
                    h5(plotOutput("arimaPlot"))
                    ),
           tabPanel("Model",
-                   helpText(h5("ETS Method")),
-                   h2(verbatimTextOutput("text")),
-                   helpText(h5("ETS Smooth Parameters")),
-                   h2(verbatimTextOutput("text2")),
                    helpText(h5("ETS Model")),
+                   h2(verbatimTextOutput("text")),
+                   helpText(h5("ETS Transition Equation:")),
+                   helpText(h5("Smoothing Constants and Estimated Parameters")),
+                   h2(verbatimTextOutput("text2")),
+                   helpText(h5("ARIMA Model")),
                    h2(verbatimTextOutput("text3")),
-                   helpText(h5("ARIMA Method")),
-                   h2(verbatimTextOutput("text4")),
-                   helpText(h5("ARIMA Smooth Parameters")),
-                   h2(verbatimTextOutput("text5"))
+                   helpText(h5("ARIMA Estimated Parameters")),
+                   h2(verbatimTextOutput("text4"))
                    ),
           tabPanel("Forecasts",
-                   helpText(h5("ETS Forecast")),
-                   h5(tableOutput("table")),
-                   helpText(h5("ARIMA Forecast")),
-                   h5(tableOutput("arimaTable"))
+                   helpText(h5("Forecasts")),
+                   h5(tableOutput("table"))
+#                    helpText(h5("ARIMA Forecast")),
+#                    h5(tableOutput("arimaTable"))
         )
       
              )

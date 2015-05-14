@@ -123,4 +123,68 @@ past.data <- function(ets.data){
   return(plot.data)
 }
 
+###################
+    # This creates a table that combines both the ets and arima
+    # forecast into one table
+    ##################
+
+combinedTable <- function(arima.data, ets.data){
+  
+  framed <- data.frame(as.Date(time(ets.data$mean)),
+                       ets.data$mean,
+                       arima.data$mean)
+  
+  names(framed) <- c('time', "ETS", "ARIMA")
+  
+  return(framed)
+  
+}
+
+# ---------------------------- New Plot method
+
+#################################
+# Function for creating a forecast plot
+# in ggplot2
+##########################
+
+forecastPlotData <- function(etsForecast, fredData){
+  
+  forecasts <- etsForecast %$%
+    cbind(.$mean, .$lower, .$upper)
+  
+  plotData <- cbind(as.ts(fredData), forecasts)
+  
+  plotData <- data.frame(as.Date(time(plotData)), plotData)
+  
+  colnames(plotData) <- c("Date", "Indicator", "Forecast", "Lower80", "Lower95",
+                          "Upper80", "Upper95")
+  
+  return(plotData)
+  
+}
+
+#################################
+# Function creates a ggplot of forecast data
+##########################
+
+forecastPlot <- function(plotData, span.val, input.date) {
+  
+  load(url("http://marriottschool.net/teacher/govfinance/recessions.RData"))
+  recessions <- subset(recessions, Start >= plotData$Date[1])
+  
+  ggplot(data = plotData) +
+    geom_ribbon(aes(x = Date, ymin = Lower95, ymax = Upper95), fill = "lightblue") +
+    geom_ribbon(aes(x = Date, ymin = Lower80, ymax = Upper80), fill = "yellow") +
+    geom_line(aes(x = Date, y = Indicator), color = "blue") +
+    geom_line(aes(x = Date, y = Forecast), color = "red") +
+    geom_rect ( data = recessions , aes ( xmin = Start , xmax = End , 
+                                          ymin = -Inf , ymax = +Inf ) , fill = 'grey65', alpha = 0.4 ) +
+    geom_smooth ( aes ( x = Date, y = Indicator ) , method = "loess" , span = span.val,
+                  size = .65 , color = "black" , fill = "springgreen4" ) +
+    labs(y = "")
+  
+}
+
+# ----------------------------- end New Plot method
+
 
