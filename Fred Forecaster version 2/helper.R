@@ -130,11 +130,11 @@ past.data <- function(ets.data){
 
 combinedTable <- function(arima.data, ets.data){
   
-  framed <- data.frame(as.Date(time(ets.data$mean)),
+  framed <- data.frame(as.character(as.Date(time(ets.data$mean))),
                        ets.data$mean,
                        arima.data$mean)
   
-  names(framed) <- c('time', "ETS", "ARIMA")
+  names(framed) <- c('Date', "ETS", "ARIMA")
   
   return(framed)
   
