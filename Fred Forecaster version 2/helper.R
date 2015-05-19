@@ -187,4 +187,22 @@ forecastPlot <- function(plotData, span.val, input.date) {
 
 # ----------------------------- end New Plot method
 
+# Function for extracting and renaming model parameters -------------------
+
+modelParameters <- function(forecast){
+  modelPar <- forecast$model$par[names(retail.forecast$model$par) %in% c("alpha", "beta", "phi")]
+ 
+  modelPar <- modelPar[names(modelPar) != "b"]
+  
+  names(modelPar) <- gsub(pattern = "alpha", replacement = "alpha (level)", x = names(modelPar))
+  
+  names(modelPar) <- gsub(pattern = "beta", replacement = "beta (slope)", x = names(modelPar))
+  
+  nrow.val <- nrow(forecast$model$states)
+  
+  final.states <-  forecast$model$states[nrow.val, ]
+  
+  c(modelPar, final.states) %>% return
+  
+}
 

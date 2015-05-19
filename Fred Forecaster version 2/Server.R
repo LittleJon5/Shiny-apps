@@ -238,21 +238,9 @@ shinyServer(function(input, output) {
     
     output$text2 <- renderPrint({
       
-     modelPar <-  ets.forecast()$model$par[names(ets.forecast()$model$par) %in% c("alpha", "beta")]
-     
-     names(modelPar) <- gsub(pattern = "alpha", replacement = "alpha (level)", x = names(modelPar))
-     
-     names(modelPar) <- gsub(pattern = "beta", replacement = "beta (slope)", x = names(modelPar))
-     
-     nrow.val <- nrow(ets.forecast()$model$states)
-     
-    final.states <-  ets.forecast()$model$states[nrow.val, ]
-    
-    c(modelPar, final.states)
-     
+    modelParameters(ets.forecast())  
+
     })
-    
-    
 
 
 ############################
